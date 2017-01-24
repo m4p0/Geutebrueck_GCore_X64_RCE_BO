@@ -1,5 +1,7 @@
 # Geutebrueck_GCore_X64_RCE_BO
-Metasploit module for Geutebrueck GCore surveillance system. Tested with version 1.3.8.42 and 1.4.2.37
+Metasploit module for Geutebrueck GCore "video management" system. Tested with version 1.3.8.42 and 1.4.2.37
+
+http://www.geutebrueck.com/en_US/product-overview-31934.html
 
 Timeline
 =========
