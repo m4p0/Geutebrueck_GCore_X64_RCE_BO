@@ -1,5 +1,5 @@
 # Geutebrueck_GCore_X64_RCE_BO
-Metasploit module for Geutebrueck GCore "video management" system. Tested with version 1.3.8.42 and 1.4.2.37
+Metasploit module for Geutebrueck GCore "video management" system. Tested with version 1.3.8.42 and 1.4.2.37.
 
 Full remote code execution with NT/System privileges on Windows (Win 2012R2,Win8.1,...) with the installed Geutebrueck products (GCore).
 
@@ -18,13 +18,13 @@ Timeline
 
 2016-04-28 > Vendor was re-contacted by several email addresses. Vendor replied but no security contact details were provided.
 
-2016-05-02 > Vendor was re-contacted. Vendor replied, security contact details were provided. All vulnerability related information were shared with the provided security contact.
+2016-05-02 > Vendor was re-contacted. Vendor replied, security contact details were provided. All vulnerability related information was shared with the provided security contact.
 
 2016-05-03 > Vendor announced a patch for the vulnerability.
 
 2016-05-13 > Vendor was contacted to get the progress of the patch. Vendor replied that the vulnerability was fixed but no update mechanism is available. Disclosure timeline was discussed and due the missing update mechanism an extended time window was defined (>90d).
 
-2016-07-29 > Vendor was contacted and asked about the vulnerility status and if the customers were informed. No reply from vendor.
+2016-07-29 > Vendor was contacted and asked about the vulnerability status and if the customers were informed. No reply from vendor.
 
 2016-08-19 > Vendor replied that the customers were informend and an update is available since 2016-07-22.
 
