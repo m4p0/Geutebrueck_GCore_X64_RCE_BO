@@ -26,7 +26,7 @@ Timeline
 
 2016-07-29 > Vendor was contacted and asked about the vulnerability status and if the customers were informed. No reply from vendor.
 
-2016-08-19 > Vendor replied that the customers were informend and an update is available since 2016-07-22.
+2016-08-19 > Vendor replied that the customers were informed and an update is available since 2016-07-22.
 
 2017-01-24 > Full disclosure and publication of metasploit module.
 
